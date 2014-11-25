@@ -12,7 +12,7 @@
   [name]
   (get @items name))
 
-(defn- refresh
+(defn- refresh*
   [name refresh-fn]
   (try
     (if-let [item (get-item name)]
@@ -22,6 +22,11 @@
       (error "Cannot find slot for" name))
     (catch Exception e
       (error e "Failure while refreshing" name))))
+
+(defn refresh
+  [name]
+  (when-let [item (get-item name)]
+    ((:refresh-fn item))))
 
 (defn state
   [name]
@@ -51,8 +56,10 @@
   ([name refresh-fn refresh-millis initial-value]
      (unschedule name)
      (debug "Scheduling with key" name "to refresh every" refresh-millis "millis")
-     (let [job (at-at/every refresh-millis #(refresh name refresh-fn) @pool :initial-delay (if initial-value refresh-millis 1000))]
+     (let [function #(refresh* name refresh-fn)
+           job (at-at/every refresh-millis function @pool :initial-delay (if initial-value refresh-millis 1000))]
        (swap! items assoc name {:job job
+                                :refresh-fn function
                                 :state (atom initial-value)})
        true)))
 

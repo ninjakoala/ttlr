@@ -6,7 +6,7 @@
             [overtone.at-at :as at-at]))
 
 (fact "that our refresh mechanism works"
-      (do (#'ninjakoala.ttlr/refresh :name (fn [] "new value"))
+      (do (#'ninjakoala.ttlr/refresh* :name (fn [] "new value"))
           (state :name)) => "new value"
       (provided
        (#'ninjakoala.ttlr/get-item :name) => {:state (atom nil)}))
