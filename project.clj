@@ -1,4 +1,4 @@
-(defproject com.ninjakoala/ttlr "1.0.2-SNAPSHOT"
+(defproject com.ninjakoala/ttlr "1.0.2"
   :description "TTLR - TTL cache with refresh"
   :url "https://github.com/ninjakoala/ttlr"
   :license {:name "Eclipse Public License"
