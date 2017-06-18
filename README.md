@@ -1,6 +1,4 @@
-```clojure
-[com.ninjakoala/ttlr "1.0.0"]
-```
+[![Clojars Project](https://img.shields.io/clojars/v/com.ninjakoala/ttlr.svg)](https://clojars.org/com.ninjakoala/ttlr) [![Build Status](https://travis-ci.org/ninjakoala/ttlr.svg?branch=master)](https://travis-ci.org/ninjakoala/ttlr)
 
 ```clojure
 (ns yourapp
