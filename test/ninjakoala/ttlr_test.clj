@@ -1,15 +1,18 @@
 (ns ninjakoala.ttlr-test
-  (:require [midje
-             [sweet :refer :all]
-             [util :refer [testable-privates]]]
+  (:require [midje.sweet :refer :all]
             [ninjakoala.ttlr :refer :all]
             [overtone.at-at :as at-at]))
 
+(namespace-state-changes (before :facts (do
+                                          (reset! (deref #'ninjakoala.ttlr/items) {})
+                                          (reset! (deref #'ninjakoala.ttlr/pool) nil))))
+
 (fact "that our refresh mechanism works"
-      (do (#'ninjakoala.ttlr/refresh* :name (fn [] "new value"))
-          (state :name)) => "new value"
-      (provided
-       (#'ninjakoala.ttlr/get-item :name) => {:state (atom nil)}))
+      (let [initial-state (atom nil)]
+        (do (#'ninjakoala.ttlr/refresh* :name (constantly "new value"))
+            (state :name)) => "new value"
+        (provided
+         (#'ninjakoala.ttlr/get-item :name) => {:state initial-state})))
 
 (fact "that getting the state of something which doesn't exist is nil"
       (state :name) => nil
@@ -17,9 +20,10 @@
        (#'ninjakoala.ttlr/get-item :name) => nil))
 
 (fact "that getting the state of something which does exist returns the value"
-      (state :name) => ..value..
-      (provided
-       (#'ninjakoala.ttlr/get-item :name) => {:state (atom ..value..)}))
+      (let [initial-state (atom ..value..)]
+        (state :name) => ..value..
+        (provided
+         (#'ninjakoala.ttlr/get-item :name) => {:state initial-state})))
 
 (fact "that unscheduling does the right thing"
       (do (#'ninjakoala.ttlr/unschedule-all)
